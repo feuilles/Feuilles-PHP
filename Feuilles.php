@@ -3,17 +3,26 @@
 class Feuilles
 {
     
+    protected $client_id;
+    protected $client_secret;
+    protected $redirect_uri;
     protected $access_token;
     
-    public function setAccessToken ($access_token) {
-    	 $this->access_token = $access_token;
+    public function __construct($args) {
+    	$this->client_id = $args["client_id"];
+    	$this->client_secret = $args["client_secret"];
+    	$this->redirect_uri = $args["redirect_uri"];
+    	
+    	if (array_key_exists("access_token", $args)) {
+    		$this->access_token = $args["access_token"];
+    	}
     }
     
-    public function getAccessToken($code, $client_id, $client_secret, $redirect_uri, $grant_type = "authorization_code") {
+    public function getAccessToken($code, $grant_type = "authorization_code") {
         $query = array(
-            'client_id' => $client_id,
-            'redirect_uri' => $redirect_uri,
-            'client_secret' => $client_secret,
+            'client_id' => $this->client_id,
+            'client_secret' => $this->client_secret,
+            'redirect_uri' => $this->redirect_uri,
             'code' => $code,
             'grant_type' => $grant_type
         );
@@ -35,6 +44,10 @@ class Feuilles
         
         return $response;
         
+    }
+    
+    public function setAccessToken ($access_token) {
+    	 $this->access_token = $access_token;
     }
     
     public function readDoc($sha) {
